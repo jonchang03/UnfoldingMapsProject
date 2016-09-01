@@ -24,8 +24,8 @@ import parsing.ParseFeed;
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
  * Author: UC San Diego Intermediate Software Development MOOC team
- * @author Your name here
- * Date: July 17, 2015
+ * @author Jonathan Chang
+ * Date: August 30, 2016
  * */
 public class EarthquakeCityMap extends PApplet {
 
@@ -88,6 +88,11 @@ public class EarthquakeCityMap extends PApplet {
 	    int yellow = color(255, 255, 0);
 	    
 	    //TODO: Add code here as appropriate
+	    for (PointFeature f: earthquakes) {
+	    	Marker newMarker = createMarker(f);
+	    	markers.add(newMarker);
+	    }
+	    map.addMarkers(markers); // add markers to the map
 	}
 		
 	// A suggested helper method that takes in an earthquake feature and 
@@ -96,6 +101,8 @@ public class EarthquakeCityMap extends PApplet {
 	private SimplePointMarker createMarker(PointFeature feature)
 	{
 		// finish implementing and use this method, if it helps.
+		SimplePointMarker m = new SimplePointMarker(feature.getLocation());
+		m.setRadius(10); // set radius of each marker to 10!
 		return new SimplePointMarker(feature.getLocation());
 	}
 	
