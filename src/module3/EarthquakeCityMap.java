@@ -32,7 +32,7 @@ public class EarthquakeCityMap extends PApplet {
 	private static final long serialVersionUID = 1L;
 
 	// IF YOU ARE WORKING OFFLINE, change the value of this variable to true
-	private static final boolean offline = true;
+	private static final boolean offline = false;
 	
 	// Less than this threshold is a light earthquake
 	public static final float THRESHOLD_MODERATE = 5;
@@ -58,7 +58,9 @@ public class EarthquakeCityMap extends PApplet {
     // an int that represents the color yellow.  
     private int blue = color(0, 0, 255);
     private int yellow = color(255, 255, 0);
-    private int red = color (255, 0, 0);
+    private int red = color(255, 0, 0);
+    private int black = color(0, 0, 0);
+    
     // int to represent marker sizes
     private int small = 5;
     private int medium = 10;
@@ -150,9 +152,30 @@ public class EarthquakeCityMap extends PApplet {
 
 	// helper method to draw key in GUI
 	// TODO: Implement this method to draw the key
+	// match the key shown in the instructions
 	private void addKey() 
 	{	
 		// Remember you can use Processing's graphics methods here
-	
+		// rect(a, b, c, d): a = x-coordinate; b = y-coordinate; c = width; d = height
+		fill(255, 250, 240);
+		rect(20, 50, 160, 250);		
+		fill(black);
+		text("Earthquake Key", 50, 70);
+		
+		// ellipse(a, b, c, d): a = x-coordinate; b = y-coordinate; c = width; d = height
+		fill(red);
+		ellipse(50, 107, 15, 15);
+		fill(black);
+		text("5.0+ Magnitude", 70, 110);
+		
+		fill(yellow);
+		ellipse(50, 145, 10, 10);
+		fill(black);
+		text("4.0+ Magnitude", 70, 150);
+		
+		fill(blue);
+		ellipse(50, 187, 5, 5);
+		fill(black);
+		text("Below 4.0", 70, 190);
 	}
 }
