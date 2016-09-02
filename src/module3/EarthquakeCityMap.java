@@ -2,24 +2,23 @@ package module3;
 
 //Java utilities libraries
 import java.util.ArrayList;
+import java.util.HashMap;
 //import java.util.Collections;
 //import java.util.Comparator;
 import java.util.List;
 
-//Processing library
-import processing.core.PApplet;
-
 //Unfolding libraries
 import de.fhpotsdam.unfolding.UnfoldingMap;
-import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.data.PointFeature;
+import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.marker.SimplePointMarker;
 import de.fhpotsdam.unfolding.providers.Google;
 import de.fhpotsdam.unfolding.providers.MBTilesMapProvider;
 import de.fhpotsdam.unfolding.utils.MapUtils;
-
 //Parsing library
 import parsing.ParseFeed;
+//Processing library
+import processing.core.PApplet;
 
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
@@ -33,7 +32,7 @@ public class EarthquakeCityMap extends PApplet {
 	private static final long serialVersionUID = 1L;
 
 	// IF YOU ARE WORKING OFFLINE, change the value of this variable to true
-	private static final boolean offline = false;
+	private static final boolean offline = true;
 	
 	// Less than this threshold is a light earthquake
 	public static final float THRESHOLD_MODERATE = 5;
@@ -46,8 +45,24 @@ public class EarthquakeCityMap extends PApplet {
 	// The map
 	private UnfoldingMap map;
 	
+	// The List you will populate with new SimplePointMarkers
+    private List<Marker> markers = new ArrayList<Marker>();
+    
+    // map markers to corresponding magnitudes
+    private HashMap<Marker, Float> magnitudeMap = new HashMap<Marker, Float>();
+	
 	//feed with magnitude 2.5+ Earthquakes
 	private String earthquakesURL = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.atom";
+	
+	// Here is an example of how to use Processing's color method to generate 
+    // an int that represents the color yellow.  
+    private int blue = color(0, 0, 255);
+    private int yellow = color(255, 255, 0);
+    private int red = color (255, 0, 0);
+    // int to represent marker sizes
+    private int small = 5;
+    private int medium = 10;
+    private int large = 15;
 
 	
 	public void setup() {
@@ -65,9 +80,6 @@ public class EarthquakeCityMap extends PApplet {
 		
 	    map.zoomToLevel(2);
 	    MapUtils.createDefaultEventDispatcher(this, map);	
-			
-	    // The List you will populate with new SimplePointMarkers
-	    List<Marker> markers = new ArrayList<Marker>();
 
 	    //Use provided parser to collect properties for each earthquake
 	    //PointFeatures have a getLocation method
@@ -83,16 +95,18 @@ public class EarthquakeCityMap extends PApplet {
 	    	// PointFeatures also have a getLocation method
 	    }
 	    
-	    // Here is an example of how to use Processing's color method to generate 
-	    // an int that represents the color yellow.  
-	    int yellow = color(255, 255, 0);
-	    
 	    //TODO: Add code here as appropriate
 	    for (PointFeature f: earthquakes) {
+	    	// create marker and add it to the list of markers
 	    	Marker newMarker = createMarker(f);
 	    	markers.add(newMarker);
+	    	// use marker as key and corresponding magnitude as value on hash map
+	    	Object magObj = f.getProperty("magnitude");
+	    	float mag = Float.parseFloat(magObj.toString());	   
+	    	magnitudeMap.put(newMarker, mag);
 	    }
 	    map.addMarkers(markers); // add markers to the map
+	    styleMarkers();	// style the markers
 	}
 		
 	// A suggested helper method that takes in an earthquake feature and 
@@ -110,6 +124,27 @@ public class EarthquakeCityMap extends PApplet {
 	    background(10);
 	    map.draw();
 	    addKey();
+	}
+	
+	// style markers based on instructions in step 4
+	private void styleMarkers() {
+		for (Marker m : markers) {
+			Float mag = magnitudeMap.get(m); // use the marker as the key to retrieve the magnitude
+			System.out.println(mag);
+	    	if (mag < 4.0) {
+	    		m.setColor(blue);
+	    		((SimplePointMarker) m).setRadius(small);
+	    	} 
+	    	else if (mag > 4.0 && mag < 4.9) {
+	    		m.setColor(yellow);
+	    		((SimplePointMarker) m).setRadius(medium);
+	    	} 
+	    	else {
+	    		m.setColor(red);
+	    		((SimplePointMarker) m).setRadius(large);
+	    	}
+			
+		}
 	}
 
 
