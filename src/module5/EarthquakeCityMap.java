@@ -168,6 +168,72 @@ public class EarthquakeCityMap extends PApplet {
 		// TODO: Implement this method
 		// Hint: You probably want a helper method or two to keep this code
 		// from getting too long/disorganized
+		if (lastClicked != null) {
+			// “de-selects” whichever marker was clicked on last and so all markers should be displayed.
+			lastClicked = null;
+			unhideMarkers();
+		} 
+		else if (lastClicked == null ) {
+			// Otherwise, the method must determine which marker is being selected (if any) and
+			// hide / display other markers so that:
+			checkEarthquakeClick();
+			if (lastClicked == null) {
+				checkCityClick();
+			}
+		}
+	}
+	
+	// helper methods for mouseClicked()
+	// Step 1: When an earthquake’s marker is selected, all cities within the threat circle of this
+	// earthquake are displayed on the map and all other cities and earthquakes are hidden.
+	private void checkEarthquakeClick() {
+		if (lastClicked != null) 
+			return;
+		for (Marker m : quakeMarkers) {
+			EarthquakeMarker marker = (EarthquakeMarker)m; // cast to EarthquakeMarker to use some of its methods
+			if(marker.isInside(map, mouseX, mouseY) && !marker.isHidden()) {
+				lastClicked = marker;
+				// hide all other earthquakes
+				for (Marker mhide: quakeMarkers) {
+					if(mhide != lastClicked) {
+						mhide.setHidden(true);
+					}
+				}
+				// hide all cities except those within the threat circle
+				for (Marker mhide : cityMarkers) {
+					if(mhide.getDistanceTo(marker.getLocation()) > marker.threatCircle()) {
+						mhide.setHidden(true);
+					}
+				}
+				return;
+			}
+		}
+	}
+	// Step 2: When a city’s marker is selected, all earthquakes which contain that city in their 
+	// threat circle are displayed on the map and all other cities and earthquakes are hidden.
+	private void checkCityClick() {
+		if (lastClicked != null)
+			return;
+		for (Marker m : cityMarkers) {
+			if (m.isInside(map, mouseX, mouseY) && !m.isHidden()) {
+				lastClicked = (CommonMarker)m;
+				// hide all other cities
+				for (Marker mhide : cityMarkers) {
+					if (mhide != lastClicked) {
+						mhide.setHidden(true);
+					}
+				}
+				// hide all earthquakes except those that contain city in their threat circle
+				for (Marker mhide : quakeMarkers) {
+					EarthquakeMarker quakeMarker = (EarthquakeMarker)mhide;
+					if (quakeMarker.getDistanceTo(m.getLocation()) > quakeMarker.threatCircle()) {
+						quakeMarker.setHidden(true);
+					}
+				}
+				return;
+			}
+		}
+		
 	}
 	
 	
