@@ -20,8 +20,8 @@ import processing.core.PApplet;
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
  * Author: UC San Diego Intermediate Software Development MOOC team
- * @author Your name here
- * Date: July 17, 2015
+ * @author Jonathan Chang
+ * Date: September 10, 2016
  * */
 public class EarthquakeCityMap extends PApplet {
 	
@@ -59,6 +59,8 @@ public class EarthquakeCityMap extends PApplet {
 
 	// A List of country markers
 	private List<Marker> countryMarkers;
+	
+	private int orange = color(255, 165, 0);
 	
 	public void setup() {		
 		// (1) Initializing canvas and map tiles
@@ -141,17 +143,19 @@ public class EarthquakeCityMap extends PApplet {
 		textSize(12);
 		text("Earthquake Key", 50, 75);
 		
-		fill(color(255, 0, 0));
-		ellipse(50, 125, 15, 15);
-		fill(color(255, 255, 0));
-		ellipse(50, 175, 10, 10);
-		fill(color(0, 0, 255));
-		ellipse(50, 225, 5, 5);
+		fill(orange);
+		int triangleSize = 8;
+		triangle(50,125-triangleSize, 50-triangleSize,125+triangleSize, 50+triangleSize,125+triangleSize);
+		//ellipse(50, 125, 15, 15);
+		//fill(color(255, 255, 0));
+		//ellipse(50, 175, 10, 10);
+		//fill(color(0, 0, 255));
+		//ellipse(50, 225, 5, 5);
 		
 		fill(0, 0, 0);
-		text("5.0+ Magnitude", 75, 125);
-		text("4.0+ Magnitude", 75, 175);
-		text("Below 4.0", 75, 225);
+		text("City Marker", 75, 125);
+		//text("4.0+ Magnitude", 75, 175);
+		//text("Below 4.0", 75, 225);
 	}
 
 	
