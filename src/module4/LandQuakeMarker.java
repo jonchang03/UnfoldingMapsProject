@@ -33,7 +33,8 @@ public class LandQuakeMarker extends EarthquakeMarker {
 		// and how it is set in the EarthquakeMarker constructor
 		
 		// TODO: Implement this method
-		
+		// scale the radius from Earthquake Marker
+		pg.ellipse(x,  y, (float)1.33*radius, (float)1.33*radius);
 	}
 	
 
