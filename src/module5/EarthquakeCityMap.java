@@ -1,6 +1,7 @@
 package module5;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
@@ -36,7 +37,7 @@ public class EarthquakeCityMap extends PApplet {
 	private static final long serialVersionUID = 1L;
 
 	// IF YOU ARE WORKING OFFILINE, change the value of this variable to true
-	private static final boolean offline = false;
+	private static final boolean offline = true;
 	
 	/** This is where to find the local tiles, for working without an Internet connection */
 	public static String mbTilesString = "blankLight-1-3.mbtiles";
@@ -63,17 +64,34 @@ public class EarthquakeCityMap extends PApplet {
 	private CommonMarker lastSelected;
 	private CommonMarker lastClicked;
 	
+	private void sortAndPrint(int numToPrint) {
+		ArrayList<EarthquakeMarker> earthquakeMarkersList = new ArrayList<EarthquakeMarker>();
+		for (Marker m: quakeMarkers) {
+			earthquakeMarkersList.add((EarthquakeMarker) m);
+		}
+		
+		Collections.sort(earthquakeMarkersList);
+		int numQuakes = earthquakeMarkersList.size();
+		int i = 0;
+		while (i < numToPrint && i < numQuakes) {
+			EarthquakeMarker em = earthquakeMarkersList.get(i);
+			System.out.println(em.getTitle());
+			i++;
+		}
+	}
+	
 	public void setup() {		
 		// (1) Initializing canvas and map tiles
 		size(900, 700, OPENGL);
 		if (offline) {
 		    map = new UnfoldingMap(this, 200, 50, 650, 600, new MBTilesMapProvider(mbTilesString));
-		    earthquakesURL = "2.5_week.atom";  // The same feed, but saved August 7, 2015
+		    //earthquakesURL = "2.5_week.atom";  // The same feed, but saved August 7, 2015
+		    earthquakesURL = "test2.atom";
 		}
 		else {
 			map = new UnfoldingMap(this, 200, 50, 650, 600, new Google.GoogleMapProvider());
 			// IF YOU WANT TO TEST WITH A LOCAL FILE, uncomment the next line
-		    //earthquakesURL = "2.5_week.atom";
+		    earthquakesURL = "2.5_week.atom";
 		}
 		MapUtils.createDefaultEventDispatcher(this, map);
 		
@@ -103,11 +121,16 @@ public class EarthquakeCityMap extends PApplet {
 		  else {
 		    quakeMarkers.add(new OceanQuakeMarker(feature));
 		  }
+		  
 	    }
-
+	    
 	    // could be used for debugging
-	    printQuakes();
-	 		
+	    //printQuakes();
+	    
+	    //test sortAndPrint()
+	    sortAndPrint(5);
+	    sortAndPrint(20);
+	    
 	    // (3) Add markers to map
 	    //     NOTE: Country markers are not added to the map.  They are used
 	    //           for their geometric properties
@@ -389,5 +412,4 @@ public class EarthquakeCityMap extends PApplet {
 		}
 		return false;
 	}
-
 }

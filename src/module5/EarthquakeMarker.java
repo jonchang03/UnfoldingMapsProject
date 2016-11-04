@@ -10,9 +10,8 @@ import processing.core.PGraphics;
  * @author Your name here
  *
  */
-public abstract class EarthquakeMarker extends CommonMarker
-{
-	
+public abstract class EarthquakeMarker extends CommonMarker implements Comparable<EarthquakeMarker>
+{	
 	// Did the earthquake occur on land?  This will be set by the subclasses.
 	protected boolean isOnLand;
 
@@ -172,7 +171,20 @@ public abstract class EarthquakeMarker extends CommonMarker
 		return isOnLand;
 	}
 	
-
-	
+	/*
+	 * implement comparable
+	 */
+	public int compareTo (EarthquakeMarker otherMarker) {
+		float diff = this.getMagnitude() - otherMarker.getMagnitude();
+		if (diff > 0) {
+			return -1;
+		}
+		if (diff < 0) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
 	
 }
