@@ -7,11 +7,10 @@ import java.util.List;
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.PointFeature;
 import de.fhpotsdam.unfolding.data.ShapeFeature;
+import de.fhpotsdam.unfolding.geo.Location;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.marker.SimpleLinesMarker;
-import de.fhpotsdam.unfolding.marker.SimplePointMarker;
 import de.fhpotsdam.unfolding.utils.MapUtils;
-import de.fhpotsdam.unfolding.geo.Location;
 import parsing.ParseFeed;
 import processing.core.PApplet;
 
@@ -25,6 +24,7 @@ public class AirportMap extends PApplet {
 	
 	UnfoldingMap map;
 	private List<Marker> airportList;
+	private List<Marker> visitedAirportsMarkers; // list of airports I've been to
 	List<Marker> routeList;
 	
 	public void setup() {
@@ -42,19 +42,51 @@ public class AirportMap extends PApplet {
 		airportList = new ArrayList<Marker>();
 		HashMap<Integer, Location> airports = new HashMap<Integer, Location>();
 		
+		// hashmap to access each marker using the airport code as the key
+		HashMap<String, Marker> airportsByCode = new HashMap<String, Marker>(); 
+		
 		// create markers from features
 		for(PointFeature feature : features) {
 			AirportMarker m = new AirportMarker(feature);
-	
-			m.setRadius(5);
+			
+			m.setRadius(10);
 			airportList.add(m);
 			
 			// put airport in hashmap with OpenFlights unique id for key
 			airports.put(Integer.parseInt(feature.getId()), feature.getLocation());
-		
+			
+			// put airports in hashmap with airport code as the key - for extension
+			airportsByCode.put(((String)feature.getProperty("code")).replaceAll("^\"|\"$", ""), m);
+			// test to trim the quotes from the airport code
+			// System.out.println(((String)feature.getProperty("code")).replaceAll("^\"|\"$", ""));
 		}
 		
 		
+		// create list of airports I have been to
+		ArrayList<String> visitedAirports = new ArrayList<String>();
+		visitedAirports.add("EWR");
+		visitedAirports.add("TPE");
+		visitedAirports.add("JFK");
+		visitedAirports.add("SEA");
+		visitedAirports.add("SJU");
+		visitedAirports.add("LGW");
+		visitedAirports.add("VCE");
+		visitedAirports.add("BRU");
+		visitedAirports.add("LGW");
+		visitedAirports.add("LHR");
+		visitedAirports.add("STL");
+		visitedAirports.add("PEK");
+		visitedAirports.add("NRT");
+		
+		// create a list of airport markers
+		visitedAirportsMarkers = new ArrayList<Marker>();
+		for (String airportCode : visitedAirports) {
+			if (airportsByCode.containsKey(airportCode)) {
+				System.out.println(airportCode);
+				visitedAirportsMarkers.add(airportsByCode.get(airportCode));
+			}
+		}
+
 		// parse route data
 		List<ShapeFeature> routes = ParseFeed.parseRoutes(this, "routes.dat");
 		routeList = new ArrayList<Marker>();
@@ -72,7 +104,7 @@ public class AirportMap extends PApplet {
 			
 			SimpleLinesMarker sl = new SimpleLinesMarker(route.getLocations(), route.getProperties());
 		
-			System.out.println(sl.getProperties());
+			// System.out.println(sl.getProperties());
 			
 			//UNCOMMENT IF YOU WANT TO SEE ALL ROUTES
 			//routeList.add(sl);
@@ -83,7 +115,8 @@ public class AirportMap extends PApplet {
 		//UNCOMMENT IF YOU WANT TO SEE ALL ROUTES
 		//map.addMarkers(routeList);
 		
-		map.addMarkers(airportList);
+		// map.addMarkers(airportList);
+		 map.addMarkers(visitedAirportsMarkers); // add list of airports i have been to
 		
 	}
 	
