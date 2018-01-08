@@ -1,4 +1,4 @@
-package module6;
+package module6_extension;
 
 import de.fhpotsdam.unfolding.data.PointFeature;
 import processing.core.PConstants;
@@ -57,7 +57,14 @@ public abstract class EarthquakeMarker extends CommonMarker implements Comparabl
 	
 	// TODO: Add the method:
 	public int compareTo(EarthquakeMarker marker) {
-		return Float.compare(marker.getMagnitude(), this.getMagnitude());
+		float diff = this.getMagnitude() - marker.getMagnitude();
+		if (diff > 0) {
+			return -1;
+		} else if (diff < 0) {
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 	
 	

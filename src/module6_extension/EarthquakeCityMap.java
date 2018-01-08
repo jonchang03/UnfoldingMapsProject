@@ -1,8 +1,9 @@
-package module6;
+package module6_extension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.*;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.Feature;
@@ -115,17 +116,17 @@ public class EarthquakeCityMap extends PApplet {
 		  }
 	    }
 
-	    
 	    // could be used for debugging
-	    printQuakes();
-	    sortAndPrint(15); // sortAndPrint() to test
-	    
+	    // printQuakes();
+	    sortAndPrint(20);
+	 		
 	    // (3) Add markers to map
 	    //     NOTE: Country markers are not added to the map.  They are used
 	    //           for their geometric properties
 	    map.addMarkers(quakeMarkers);
 	    map.addMarkers(cityMarkers);
-	   
+	    
+	    
 	}  // End setup
 	
 	
@@ -138,13 +139,19 @@ public class EarthquakeCityMap extends PApplet {
 	
 	
 	// TODO: Add the method:
-	private void sortAndPrint(int numToPrint){
-		// create a new array from the list of earthquake markers
-		// EarthquakeMarker[] quakes = quakeMarkers.toArray(new EarthquakeMarker[quakeMarkers.size()]);
-		EarthquakeMarker[] quakes = quakeMarkers.toArray(new EarthquakeMarker[0]);
-		Arrays.sort(quakes);
-		for (int i = 0; i < numToPrint && i < quakes.length; i++) {			
-			System.out.println("Sorted: " + quakes[i]);
+	//   private void sortAndPrint(int numToPrint)
+	// and then call that method from setUp
+	private void sortAndPrint(int numToPrint) {
+		List<EarthquakeMarker> quakeMarkerList = new ArrayList<EarthquakeMarker>();
+		EarthquakeMarker eqm;
+		for (Marker m : quakeMarkers) {
+			eqm = (EarthquakeMarker)m;
+			quakeMarkerList.add(eqm);
+		}
+		Collections.sort(quakeMarkerList);
+		int actualNumToPrint = (numToPrint >= quakeMarkerList.size() ? quakeMarkerList.size() : numToPrint); 
+		for (int index = 0; index < actualNumToPrint; index++) {
+			System.out.println(quakeMarkerList.get(index));
 		}
 	}
 	
@@ -203,7 +210,7 @@ public class EarthquakeCityMap extends PApplet {
 				checkCitiesForClick();
 			}
 		}
-	}	
+	}
 	
 	// Helper method that will check if a city marker was clicked on
 	// and respond appropriately
